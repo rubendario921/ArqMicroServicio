@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  java_app:
+    build: .
+    container_name: users-api
+    image: rdcl-java-app:1.0.0
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://users-postgresql:5432/usersbdd
+      - SPRING_DATASOURCE_USERNAME=rdario921
+      - SPRING_DATASOURCE_PASSWORD=123456789
+    depends_on:
+      java_db:
+        condition: service_healthy
+    networks:
+      - test-network
+
+  java_db:
+    container_name: users-postgresql
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=usersbdd
+      - POSTGRES_USER=rdario921
+      - POSTGRES_PASSWORD=123456789
+    networks:
+      - test-network
+networks:
+  test-network:
+    driver: bridge
