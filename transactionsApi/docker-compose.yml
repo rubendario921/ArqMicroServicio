@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  transactions_app:
+    build: .
+    container_name: transactions-api
+    image: rdcl-transactions-app:1.0.1
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://transactions-postgresql:5432/transactionsbdd
+      - SPRING_DATASOURCE_USERNAME=rdario921
+      - SPRING_DATASOURCE_PASSWORD=123456789
+      - USERAPI_URL=http://users-api:8080
+    depends_on:
+      transactions_db:
+        condition: service_healthy
+    networks:
+      - usersapi_app-network
+
+  transactions_db:
+    container_name: transactions-postgresql
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=transactionsbdd
+      - POSTGRES_USER=rdario921
+      - POSTGRES_PASSWORD=123456789
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U rdario921 -d transactionsbdd" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - usersapi_app-network
+networks:
+  usersapi_app-network:
+    external: true

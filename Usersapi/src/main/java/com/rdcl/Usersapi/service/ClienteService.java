@@ -96,13 +96,17 @@ public class ClienteService implements IClienteService {
     }
 
 
+    @Async
     @Override
-    public void deleteDataById(Integer id) {
+    public CompletableFuture<Void> deleteDataById(Integer id) {
         if (id == null) throw new RuntimeException("ID is null");
         try {
-            clienteRepository.deleteById(id);
+            Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente not found"));
+            clienteRepository.delete(cliente);
+            return CompletableFuture.completedFuture(null);
         } catch (Exception e) {
-            throw new RuntimeException("Error: deleteDataById Message:", e);
+            throw new RuntimeException("Error al eliminar el cliente: " + e.getMessage(), e);
         }
     }
 

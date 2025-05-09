@@ -1,9 +1,9 @@
 version: '3.9'
 services:
-  java_app:
+  users_app:
     build: .
     container_name: users-api
-    image: rdcl-java-app:1.0.0
+    image: rdcl-java-app:1.0.1
     ports:
       - "8080:8080"
     environment:
@@ -11,12 +11,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=rdario921
       - SPRING_DATASOURCE_PASSWORD=123456789
     depends_on:
-      java_db:
+      users_db:
         condition: service_healthy
     networks:
-      - test-network
+      - app-network
 
-  java_db:
+  users_db:
     container_name: users-postgresql
     image: postgres:latest
     ports:
@@ -25,8 +25,13 @@ services:
       - POSTGRES_DB=usersbdd
       - POSTGRES_USER=rdario921
       - POSTGRES_PASSWORD=123456789
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U rdario921 -d usersbdd" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - test-network
+      - app-network
 networks:
-  test-network:
+  app-network:
     driver: bridge

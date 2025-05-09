@@ -15,5 +15,5 @@ public interface IClienteService {
 
     CompletableFuture<List<Cliente>> getAllData();
 
-    void deleteDataById(Integer id);
+    CompletableFuture<Void> deleteDataById(Integer id);
 }
