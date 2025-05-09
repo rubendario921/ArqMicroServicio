@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "2b681ce4-8ef1-4edb-ad67-972e42af590a",
+		"name": "TestSemiSenior",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31993041"
+	},
+	"item": [
+		{
+			"name": "GetAllClientes",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cliente",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cliente"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "saveCliente",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cliName\": \"German Carrillo\",\n    \"cliPassword\": \"123456789\",\n    \"cliIdentification\": \"1707586770\",\n    \"cliAddress\": \"Solanda\",\n    \"cliNumberPhone\": \"0987622241\",\n    \"cliGender\": \"M\",\n    \"cliAge\": \"58\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cliente",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cliente"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getClienteById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/cliente/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cliente",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateClienteById",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"cliName\": \"Jfferson Carrillo\",\n    \"cliPassword\": \"123456789\",\n    \"cliIdentification\": \"1707586770\",\n    \"cliAddress\": \"Magdalena\",\n    \"cliNumberPhone\": \"0987622241\",\n    \"cliGender\": \"M\",\n    \"cliAge\": \"32\"\n}   \n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/cliente/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"cliente",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createCuenta",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "getCuentaByAccountNumber",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/cuenta/accountNumber?accountNumber=JGCL939",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"cuenta",
+						"accountNumber"
+					],
+					"query": [
+						{
+							"key": "accountNumber",
+							"value": "JGCL939"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllCuentas",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "getCuentasByClienteId",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "getAllMovimientos",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "createMovimiento",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
