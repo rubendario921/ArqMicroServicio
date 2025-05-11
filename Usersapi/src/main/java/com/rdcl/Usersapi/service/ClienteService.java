@@ -2,6 +2,9 @@ package com.rdcl.Usersapi.service;
 
 import com.rdcl.Usersapi.dto.ClienteDTO;
 import com.rdcl.Usersapi.entity.Cliente;
+import com.rdcl.Usersapi.exception.DuplicateDataException;
+import com.rdcl.Usersapi.exception.IsNullOrEmptyException;
+import com.rdcl.Usersapi.exception.ResourceNotFoundException;
 import com.rdcl.Usersapi.repository.ClienteRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -22,36 +25,29 @@ public class ClienteService implements IClienteService {
     @Async
     @Override
     public CompletableFuture<Cliente> saveData(ClienteDTO request) {
-        if (request == null) throw new RuntimeException("ClienteRequest is null");
+        if (request == null) throw new IsNullOrEmptyException("ClienteService", "saveData", "Request is null or empty");
         try {
+            Cliente existingCliente = clienteRepository.findBycliIdentification(request.getCliIdentification());
+            if (existingCliente != null)
+                throw new DuplicateDataException("ClienteService", "saveData", "Identification already exists");
 
-            Cliente newCliente = new Cliente();
-            newCliente.setPerName(request.getCliName());
-            newCliente.setPerGender(request.getCliGender());
-            newCliente.setPerAge(request.getCliAge());
-            newCliente.setPerIdentification(request.getCliIdentification());
-            newCliente.setPerAddress(request.getCliAddress());
-            newCliente.setPerNumberPhone(request.getCliNumberPhone());
-
-            newCliente.setCliPassword(request.getCliPassword());
-            newCliente.setCliStatus(true);
-
+            Cliente newCliente = mapTEntity(request);
             Cliente savedCliente = clienteRepository.save(newCliente);
             return CompletableFuture.completedFuture(savedCliente);
         } catch (Exception e) {
-            throw new RuntimeException("Error: saveData Message:", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Async
     @Override
     public CompletableFuture<Cliente> updateData(Integer id, ClienteDTO request) {
-        if (id == null) throw new RuntimeException("ID is null");
-        if (request == null) throw new RuntimeException("ClienteRequest is null");
+        if (id == null) throw new IsNullOrEmptyException("ClienteService", "updateData", "ID is null");
+        if (request == null)
+            throw new IsNullOrEmptyException("ClienteService", "updateData", "Request is null or empty");
 
         try {
-            Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente not found"));
-
+            Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("updateData", "Cliente not found"));
             cliente.setPerName(request.getCliName());
             cliente.setPerIdentification(request.getCliIdentification());
             cliente.setPerAddress(request.getCliAddress());
@@ -64,8 +60,6 @@ public class ClienteService implements IClienteService {
 
             Cliente updateCliente = clienteRepository.save(cliente);
             return CompletableFuture.completedFuture(updateCliente);
-
-
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -75,12 +69,12 @@ public class ClienteService implements IClienteService {
     @Async
     @Override
     public CompletableFuture<Cliente> getDataById(Integer id) {
-        if (id == null) throw new RuntimeException("ID is null");
+        if (id == null) throw new IsNullOrEmptyException("ClienteService", "updateData", "ID is null");
         try {
-            Cliente cliente = clienteRepository.findById(id).orElse(null);
+            Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("updateData", "Cliente not found"));
             return CompletableFuture.completedFuture(cliente);
         } catch (Exception e) {
-            throw new RuntimeException("Error: getDataById Message:", e);
+            throw new RuntimeException("Error: getDataById Message: {}", e);
         }
     }
 
@@ -95,19 +89,30 @@ public class ClienteService implements IClienteService {
         }
     }
 
-
     @Async
     @Override
     public CompletableFuture<Void> deleteDataById(Integer id) {
-        if (id == null) throw new RuntimeException("ID is null");
+        if (id == null) throw new IsNullOrEmptyException("ClienteService", "updateData", "ID is null");
         try {
-            Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente not found"));
+            Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("updateData", "Cliente not found"));
             clienteRepository.delete(cliente);
             return CompletableFuture.completedFuture(null);
         } catch (Exception e) {
             throw new RuntimeException("Error al eliminar el cliente: " + e.getMessage(), e);
         }
+    }
+
+    private static Cliente mapTEntity(ClienteDTO clienteDTO) {
+        Cliente newCliente = new Cliente();
+        newCliente.setPerName(clienteDTO.getCliName());
+        newCliente.setPerGender(clienteDTO.getCliGender());
+        newCliente.setPerAge(clienteDTO.getCliAge());
+        newCliente.setPerIdentification(clienteDTO.getCliIdentification());
+        newCliente.setPerAddress(clienteDTO.getCliAddress());
+        newCliente.setPerNumberPhone(clienteDTO.getCliNumberPhone());
+        newCliente.setCliPassword(clienteDTO.getCliPassword());
+        newCliente.setCliStatus(true);
+        return newCliente;
     }
 
 }
